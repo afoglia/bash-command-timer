@@ -111,7 +111,6 @@ function BCTPreCommand() {
   unset BCT_AT_PROMPT
   BCT_COMMAND_START_TIME=$(eval $BCTTime)
 }
-trap 'BCTPreCommand' DEBUG
 
 # Bash will automatically set COLUMNS to the current terminal width.
 export COLUMNS
@@ -189,4 +188,12 @@ function BCTPostCommand() {
   # Finally, print output.
   echo -e "${output_str_colored}"
 }
-PROMPT_COMMAND='BCTPostCommand'
+
+# Test if BashPreexec is in use, and if so, use that.
+if [ -z "${__bp_imported+x}" ]; then
+  trap 'BCTPreCommand' DEBUG
+  PROMPT_COMMAND='BCTPostCommand'
+else
+  preexec_functions+=( BCTPreCommand )
+  precmd_functions+=( BCTPostCommand )
+fi
