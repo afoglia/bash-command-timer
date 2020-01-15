@@ -189,11 +189,28 @@ function BCTPostCommand() {
   echo -e "${output_str_colored}"
 }
 
+
+contains () {
+  local num_elements=$#
+  local value=${!num_elements}
+  for (( idx=1; idx < ${num_elements} ; idx++ )) ; do
+    if [[ "${!idx}" == "${value}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+
 # Test if BashPreexec is in use, and if so, use that.
 if [ -z "${__bp_imported+x}" ]; then
   trap 'BCTPreCommand' DEBUG
   PROMPT_COMMAND='BCTPostCommand'
 else
-  preexec_functions+=( BCTPreCommand )
-  precmd_functions+=( BCTPostCommand )
+  if ! contains ${preexec_functions[@]} BCTPreCommand; then
+    preexec_functions+=( BCTPreCommand )
+  fi
+  if ! contains ${precmd_functions[@]} BCTPostCommand; then
+    precmd_functions+=( BCTPostCommand )
+  fi
 fi
