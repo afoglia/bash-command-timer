@@ -190,7 +190,7 @@ function BCTPostCommand() {
 }
 
 
-contains () {
+_contains () {
   local num_elements=$#
   local value=${!num_elements}
   for (( idx=1; idx < ${num_elements} ; idx++ )) ; do
@@ -207,10 +207,12 @@ if [ -z "${__bp_imported+x}" ]; then
   trap 'BCTPreCommand' DEBUG
   PROMPT_COMMAND='BCTPostCommand'
 else
-  if ! contains ${preexec_functions[@]} BCTPreCommand; then
+  if ! _contains ${preexec_functions[@]} BCTPreCommand; then
     preexec_functions+=( BCTPreCommand )
   fi
-  if ! contains ${precmd_functions[@]} BCTPostCommand; then
+  if ! _contains ${precmd_functions[@]} BCTPostCommand; then
     precmd_functions+=( BCTPostCommand )
   fi
 fi
+
+unset _contains
