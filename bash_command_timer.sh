@@ -190,7 +190,7 @@ function BCTPostCommand() {
 }
 
 
-_contains () {
+function _contains () {
   local num_elements=$#
   local value=${!num_elements}
   for (( idx=1; idx < ${num_elements} ; idx++ )) ; do
